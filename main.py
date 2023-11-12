@@ -9,25 +9,20 @@ try:
     connection.connect()
 
     # Tworzenie instancji robotów
-    pioneer = PioneerP3DX(connection.client_id)
-    youbot = KukaYouBot(connection.client_id)
+    pioneer = PioneerP3DX(connection.client_id, ['Pioneer_p3dx_leftMotor', 'Pioneer_p3dx_rightMotor'])
+    youbot = KukaYouBot(connection.client_id, ['rollingJoint_fl', 'rollingJoint_rl', 'rollingJoint_rr', 'rollingJoint_fr'])
     
-    # Testowanie ruchu do przodu dla Pioneer P3-DX
-    print("Poruszanie Pioneer P3-DX do przodu...")
-    pioneer.move_forward(0.5)
-    time.sleep(2)  # Czekaj przez 2 sekundy
-    pioneer.stop()
-    print("Zatrzymanie Pioneer P3-DX.")
 
-    # Krótka przerwa między testami
-    time.sleep(1)
+    # Skręcanie w prawo
+    youbot.synchronized_movement(-1.9, -1.9, -1.9 , -1.9)
+    time.sleep(5)
 
-    # Testowanie ruchu do przodu dla Kuka YouBot
-    print("Poruszanie Kuka YouBot do przodu...")
-    youbot.move_forward(0.5)
-    time.sleep(2)  # Czekaj przez 2 sekundy
+    youbot.setMovement(-1.9, -1.9, 2.2 , 2.2)
+    # Czekaj trochę, aby robot miał czas na skręt
+    time.sleep(2.2)
+    youbot.setMovement(-1.9, -1.9, -1.9 , -1.9)
+    time.sleep(3.5)
     youbot.stop()
-    print("Zatrzymanie Kuka YouBot.")
     time.sleep(1)
 
 except Exception as e:
