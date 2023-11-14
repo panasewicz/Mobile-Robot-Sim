@@ -40,12 +40,57 @@ class PioneerP3DX(RobotBase):
 
 
 class KukaYouBot(RobotBase):
-    def __init__(self, client_id, motor_names, omni_wheel_names):
+    def __init__(self, client_id, motor_names, omni_wheel_names, arm_joint_names, gripper_joint_names):
         super().__init__(client_id, motor_names)
         self._initialize_omni_wheels(omni_wheel_names)
+        self._initialize_arm_joints(arm_joint_names)
+        self._initialize_gripper_joints(gripper_joint_names)
+
+    def _initialize_arm_joints(self, arm_joint_names):
+        self.arm_joints = [self._get_motor_handle(name) for name in arm_joint_names]
+
+    def _initialize_gripper_joints(self, gripper_joint_names):
+        self.gripper_joints = [self._get_motor_handle(name) for name in gripper_joint_names]
 
     def _initialize_omni_wheels(self, omni_wheel_names):
         self.slipping_joints = [self._get_motor_handle(name) for name in omni_wheel_names]
+
+    def set_arm_joint_position(self, joint_index, position):
+        # Ustawia pozycję pojedynczego stawu manipulatora
+        sim.simxSetJointTargetPosition(self.client_id, self.arm_joints[joint_index], position, sim.simx_opmode_oneshot)    
+
+    def set_gripper_position(self, position):
+        for joint in self.gripper_joints:
+            sim.simxSetJointTargetPosition(self.client_id, joint, position, sim.simx_opmode_oneshot)
+
+    def set_all_joints_speed(self, speeds):
+        # Ustawia prędkości dla wszystkich stawów manipulatora
+        for joint_handle, speed in zip(self.arm_joints, speeds):
+            sim.simxSetJointTargetVelocity(self.client_id, joint_handle, speed, sim.simx_opmode_oneshot)
+
+    def set_arm_joint_speed(self, joint_index, speed):
+        # Ustawia prędkość pojedynczego stawu manipulatora
+        sim.simxSetJointTargetVelocity(self.client_id, self.arm_joints[joint_index], speed, sim.simx_opmode_oneshot)
+
+    def set_gripper_speed(self, speed):
+        # Ustawia prędkość chwytaka
+        for joint in self.gripper_joints:
+            sim.simxSetJointTargetVelocity(self.client_id, joint, speed, sim.simx_opmode_oneshot)
+
+    def set_all_joints_position(self, positions):
+        # Ustawia pozycje dla wszystkich stawów manipulatora
+        for joint_handle, position in zip(self.arm_joints, positions):
+            sim.simxSetJointTargetPosition(self.client_id, joint_handle, position, sim.simx_opmode_oneshot)
+
+    def set_gripper_speed(self, speed):
+        # Ustawia prędkość chwytaka
+        for joint in self.gripper_joints:
+            sim.simxSetJointTargetVelocity(self.client_id, joint, speed, sim.simx_opmode_oneshot)
+
+    def set_gripper_position(self, position):
+        # Ustawia pozycje chwytaka
+        for joint in self.gripper_joints:
+            sim.simxSetJointTargetPosition(self.client_id, joint, position, sim.simx_opmode_oneshot)
 
     def set_omni_wheel_orientation(self):
         orientations = [[-math.pi/4, 0, 0], [math.pi/4, 0, math.pi], [-math.pi/4, 0, 0] , [math.pi/4, 0, math.pi]]
