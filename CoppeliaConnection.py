@@ -1,5 +1,5 @@
 import sys
-sys.path.append(r'C:\Users\przyz\Documents\GitHub\Robot_Tracking_Sim\Libs\python')
+sys.path.append(r'***')
 import sim
 
 class CoppeliaConnection:
